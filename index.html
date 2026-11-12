@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" data-kofi="popup">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homelab — Infrastructure & Spec Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#151a21; --paper:#1b2129; --ink:#e9edf2; --ink2:#c2c9d3; --mu:#8c96a4; --line:#2a323d; --line2:#38414d;
+  --navbg:rgba(21,26,33,.86); --ac:#5cc4a6; --sans:'IBM Plex Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:10;background:var(--navbg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+nav strong{font-weight:600;font-size:15px}
+nav ul{display:flex;gap:22px;list-style:none;font-size:14px}
+nav ul a{text-decoration:none;color:var(--mu);transition:color .2s}
+nav ul a:hover{color:var(--ink)}
+@media(max-width:640px){nav ul{display:none}}
+
+/* intro */
+header{padding:72px 0 28px}
+header h1{font-size:40px;line-height:1.15;font-weight:600;letter-spacing:-.02em}
+header p{color:var(--ink2);font-size:18px;max-width:620px;margin-top:14px}
+
+/* 3d */
+.stage{position:relative;margin:28px 0 8px;height:540px;border:1px solid var(--line);border-radius:14px;background:radial-gradient(ellipse at 50% 30%,var(--paper) 0%,var(--bg) 85%);overflow:hidden;touch-action:pan-y}
+.stage canvas{display:block;width:100%;height:100%;cursor:grab}
+.stage .hint{max-width:55%}
+.stage canvas:active{cursor:grabbing}
+.stage .hint{position:absolute;left:16px;bottom:12px;font-size:12.5px;color:var(--mu)}
+.stage .tip{position:absolute;pointer-events:none;background:#eef2f6;color:#111418;font-size:12.5px;padding:7px 11px;border-radius:8px;white-space:nowrap;opacity:0;transform:translate(-50%,-125%);transition:opacity .15s;line-height:1.4;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.stage .tip b{display:block;font-weight:600}.stage .tip span{color:#4b5563}
+.views{position:absolute;right:12px;bottom:10px;display:flex;gap:4px}
+.views button{font:inherit;font-size:12.5px;color:var(--ink2);background:var(--bg);border:1px solid var(--line2);border-radius:7px;padding:5px 11px;cursor:pointer;transition:.2s}
+.views button:hover{color:var(--ink)}
+.views button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.kofi{display:inline-flex;align-items:center;gap:8px;background:#00b9fe;color:#fff;text-decoration:none;font-weight:600;font-size:14.5px;padding:10px 16px;border-radius:10px;transition:filter .2s}
+.kofi:hover{filter:brightness(1.1)}
+.kofi svg{width:18px;height:18px}
+.support{margin-top:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.support span{color:var(--mu);font-size:14px}
+.stage .legend{position:absolute;right:14px;top:12px;font-size:12.5px;color:var(--mu);text-align:right;line-height:1.7}
+.stage .fallback{display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:var(--mu);font-size:14px}
+@media(max-width:640px){.stage{height:380px}.stage .hint{display:none}}
+
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:36px 0 0}
+.summary div{padding:18px 0}
+.summary b{display:block;font-size:26px;font-weight:600;letter-spacing:-.01em}
+.summary span{font-size:13.5px;color:var(--mu)}
+@media(max-width:640px){.summary{grid-template-columns:1fr 1fr}}
+
+/* sections */
+section{padding:64px 0 8px}
+h2{font-size:26px;font-weight:600;letter-spacing:-.015em;margin-bottom:6px}
+.sub{color:var(--mu);margin-bottom:28px}
+h3{font-size:19px;font-weight:600;margin:40px 0 4px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h3 .role{font-size:14px;font-weight:400;color:var(--mu)}
+section>.fade+.fade{margin-top:56px}
+section h3{margin-top:0}
+.photo+figcaption{}
+h4{font-size:14px;font-weight:600;margin:24px 0 8px}
+
+.photo{margin:16px 0 4px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.photo img{width:100%;display:block;max-height:440px;object-fit:cover}
+figcaption{font-size:13px;color:var(--mu);margin-top:6px}
+
+table{width:100%;border-collapse:collapse;margin-top:14px}
+td,th{text-align:left;padding:10px 0;border-bottom:1px solid var(--line);vertical-align:top;font-size:15px}
+th{font-weight:500;font-size:13px;color:var(--mu)}
+td:first-child{width:150px;color:var(--mu)}
+td small{color:var(--mu);font-size:13.5px}
+.price{font-family:var(--mono);font-size:14px;text-align:right;width:80px}
+.prio{font-family:var(--mono);font-size:13px;color:var(--mu)}
+tr.total td{border-bottom:0;font-weight:600;color:var(--ink)}
+
+.runs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.runs span{font-size:14px;padding:3px 10px;border:1px solid var(--line2);border-radius:999px;background:var(--paper)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.two img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px;border:1px solid var(--line);aspect-ratio:4/3}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+
+/* skills */
+.rank td:first-child{width:36px;font-family:var(--mono);font-size:13px}
+.rank td.lv{width:230px;color:var(--ink2);white-space:nowrap}
+.meter{display:inline-block;width:72px;height:6px;border-radius:3px;background:var(--line);vertical-align:middle;margin-right:10px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ac);border-radius:3px;width:0;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.cols{columns:3;column-gap:28px;margin-top:14px}
+.cols li{list-style:none;break-inside:avoid;font-size:15px;padding:6px 0;border-bottom:1px solid var(--line)}
+@media(max-width:640px){.cols{columns:1}}
+
+footer{margin-top:72px;border-top:1px solid var(--line);padding:24px 0 48px;font-size:13.5px;color:var(--mu)}
+footer .wrap{display:flex;justify-content:space-between}
+
+/* motion */
+.fade{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+.fade.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}.meter i{transition:none}}
+.kmodal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;transition:opacity .2s}
+.kmodal.on{display:flex}.kmodal.show{opacity:1}
+.kpanel{position:relative;width:100%;max-width:420px;height:min(712px,calc(100vh - 40px));background:#f9f9f9;border-radius:14px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);transform:translateY(12px) scale(.98);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.kmodal.show .kpanel{transform:none}
+.kpanel iframe{border:none;width:100%;height:100%;padding:4px;background:#f9f9f9;display:block}
+.kclose{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:0;background:#00b9fe;color:#fff;font-size:18px;line-height:32px;cursor:pointer;z-index:2}
+</style>
+<script>
+(function(){
+  var h=205+Math.random()*20, s=5+Math.random()*28, l=8+Math.random()*4.5;
+  function hex(h,s,l){s/=100;l/=100;var a=s*Math.min(l,1-l),f=function(n){var k=(n+h/30)%12,c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0')};return '#'+f(0)+f(8)+f(4)}
+  var r=document.documentElement.style, bg=hex(h,s,l);
+  r.setProperty('--bg',bg);
+  r.setProperty('--paper',hex(h,s,l+3.5));
+  r.setProperty('--line',hex(h,s*.8,l+9));
+  r.setProperty('--line2',hex(h,s*.8,l+15));
+  r.setProperty('--navbg','hsla('+h+','+s+'%,'+l+'%,.86)');
+  window.__themeHex=bg;
+})();
+</script>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <strong>Homelab</strong>
+  <ul>
+    <li><a href="#servers">Servers</a></li>
+    <li><a href="#workstations">Workstations</a></li>
+    <li><a href="#desk">Desk</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#skills">Skills</a></li>
+  </ul>
+</div></nav>
+
+<div class="wrap">
+<header>
+  <h1>My homelab</h1>
+  <p>Two servers and a Cisco switch that I use to learn virtualization, storage, Active Directory, networking and self-hosting. Specs, upgrade plans and certifications are below.</p>
+  <div class="support">
+    <a class="kofi" href="https://ko-fi.com/homelabdono" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M10 11.5c-.8-.9-2.4-.4-2.4.9 0 1.2 2.4 2.6 2.4 2.6s2.4-1.4 2.4-2.6c0-1.3-1.6-1.8-2.4-.9Z" fill="currentColor"/></svg>Homelab Dono</a>
+    <span>Help fund the next upgrade on Ko-fi</span>
+  </div>
+
+  <div class="stage" id="stage">
+    <canvas id="c"></canvas>
+    <div class="tip" id="tip"></div>
+    <div class="hint">Drag to rotate · click a device to jump to its specs</div>
+    <div class="views"><button data-v="angle">Angle</button><button data-v="front">Front</button><button data-v="side">Side</button><button data-v="back">Back</button></div>
+    <div class="fallback" id="fb">3D view isn't supported in this browser.</div>
+  </div>
+
+  <div class="summary fade">
+    <div><b>2</b><span>servers</span></div>
+    <div><b>24 cores</b><span>across the lab</span></div>
+    <div><b>48 GB</b><span>lab memory</span></div>
+    <div><b>8 TB</b><span>lab storage</span></div>
+  </div>
+</header>
+
+<!-- SERVERS -->
+<section id="servers">
+  <h2>Servers</h2>
+  <p class="sub">The always-on part of the lab.</p>
+
+  <div class="fade" id="server1">
+    <h3 style="margin-bottom:4px">Server 1 <span class="role">Main lab server · 2U rackmount</span></h3>
+    <figure>
+      <div class="photo"><img src="server1.jpg" alt="Cisco UCS C240 M3 rackmount server"></div>
+      <figcaption>Cisco UCS C240 M3</figcaption>
+    </figure>
+    <table>
+      <tr><td>Model</td><td>Cisco UCS C240 M3 (2U)</td></tr>
+      <tr><td>CPU</td><td>2× Intel Xeon E5-2680 v2<br><small>20 cores / 40 threads, up to 3.6 GHz</small></td></tr>
+      <tr><td>Memory</td><td>32 GB DDR3 ECC</td></tr>
+      <tr><td>Storage</td><td>6 TB</td></tr>
+      <tr><td>GPU</td><td>AMD Radeon RX 590 8 GB</td></tr>
+      <tr><td>Hypervisor</td><td>Proxmox VE</td></tr>
+    </table>
+    <h4>What it runs</h4>
+    <div class="runs"><span>Proxmox</span><span>TrueNAS</span><span>Active Directory</span><span>Pi-hole</span><span>Apache</span><span>Docker</span><span>Virtual machines</span><span>llama.cpp (light models)</span><span>Minecraft server dashboard</span></div>
+    <h4>Planned upgrades</h4>
+    <table>
+      <tr><td>Memory</td><td>128 GB DDR3 ECC 1600 MHz</td><td class="price">$70</td></tr>
+      <tr><td>Cooling</td><td>8× Delta AFC0612D fans</td><td class="price">$72</td></tr>
+      <tr><td>Cooling</td><td>Supermicro SNK-P0048AP4 2U active CPU heatsink</td><td class="price">$70</td></tr>
+      <tr class="total"><td>Total</td><td></td><td class="price">$212</td></tr>
+    </table>
+  </div>
+
+  <div class="fade" id="server2">
+    <h3>Server 2 <span class="role">Media and containers · 2U rackmount</span></h3>
+    <table>
+      <tr><td>Chassis</td><td>2U rackmount case<br><small>16.9 × 3.5 × 15.0 in</small></td></tr>
+      <tr><td>CPU</td><td>Intel Core i5-6500<br><small>4 cores / 4 threads</small></td></tr>
+      <tr><td>Memory</td><td>16 GB DDR4</td></tr>
+      <tr><td>Storage</td><td>500 GB NVMe, 1.5 TB HDD</td></tr>
+      <tr><td>GPU</td><td>AMD Radeon RX 580 8 GB</td></tr>
+    </table>
+    <h4>What it runs</h4>
+    <div class="runs"><span>Jellyfin</span><span>24/7 Docker containers</span></div>
+  </div>
+
+  <div class="fade" id="switch">
+    <h3>Network <span class="role">Switching</span></h3>
+    <table>
+      <tr><td>Switch</td><td>Cisco Catalyst 2960G<br><small>Managed Gigabit switch</small></td></tr>
+      <tr><td>Rack</td><td>Hand-built from 2×2 lumber and plywood<br><small>30 in deep, 19 in mounting rails</small></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- WORKSTATIONS -->
+<section id="workstations">
+  <h2>Workstations</h2>
+  <p class="sub">Not part of the lab, listed for completeness.</p>
+
+  <div class="fade">
+    <h3>Main PC <span class="role">Windows 11 and Arch Linux</span></h3>
+    <table>
+      <tr><td>CPU</td><td>AMD Ryzen 7 5700X<br><small>8 cores / 16 threads</small></td></tr>
+      <tr><td>Memory</td><td>32 GB DDR4 3200 MHz</td></tr>
+      <tr><td>GPU</td><td>XFX Radeon RX 9060 XT 16 GB Swift OC</td></tr>
+      <tr><td>Storage</td><td>2 TB Samsung 990 EVO Plus (NVMe)<br><small>2 SATA SSDs (incl. 500 GB), 2× 2 TB HDD</small></td></tr>
+      <tr><td>Power supply</td><td>Apevia Prestige 600 W Gold</td></tr>
+      <tr><td>Case</td><td>Monarch Heritage Pro</td></tr>
+      <tr><td>OS</td><td>Windows 11, Arch Linux (Hyprland)</td></tr>
+    </table>
+    <h4>Planned upgrades</h4>
+    <table>
+      <tr><td><span class="prio">1</span></td><td>Corsair RM850x power supply</td></tr>
+      <tr><td><span class="prio">2</span></td><td>Another 1–2 TB NVMe drive</td></tr>
+      <tr><td><span class="prio">3</span></td><td>AIO cooler and a move to AM5 (eventually)</td></tr>
+    </table>
+  </div>
+
+  <div class="fade">
+    <h3>Laptop <span class="role">Dynabook Tecra A50-F</span></h3>
+    <table>
+      <tr><td>CPU</td><td>Intel Core i7-8565U<br><small>4 cores / 8 threads</small></td></tr>
+      <tr><td>Memory</td><td>16 GB DDR4 <small>(upgrading to 32 GB)</small></td></tr>
+      <tr><td>Storage</td><td>500 GB SSD</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- DESK -->
+<section id="desk">
+  <h2>Desk</h2>
+  <p class="sub">Monitors and peripherals.</p>
+  <div class="fade">
+    <div class="photo"><img src="desk.jpg" alt="Desk with three monitors"></div>
+    <div class="two">
+      <img src="interior.jpg" alt="Inside the main PC">
+      <img src="mic.jpg" alt="HyperX SoloCast microphone">
+    </div>
+
+    <h3 style="margin-top:40px">Monitors</h3>
+    <table>
+      <tr><td>Main</td><td>AOC Q27GAZDV<br><small>27", QD-OLED, 240 Hz, HDR</small></td></tr>
+      <tr><td>Top</td><td>1440p, 180 Hz</td></tr>
+      <tr><td>Portrait</td><td>1080p, 120 Hz</td></tr>
+    </table>
+
+    <h3 style="margin-top:40px">Peripherals</h3>
+    <table>
+      <tr><td>Keyboard</td><td>Epomaker G84 HE</td></tr>
+      <tr><td>Mouse</td><td>Logitech Pro X Superlight 2c SE</td></tr>
+      <tr><td>Microphone</td><td>HyperX SoloCast</td></tr>
+      <tr><td>Headset</td><td>Razer Barracuda X<br><small>Upgrading to a Sennheiser HD 560S or Beyerdynamic DT 990 Pro</small></td></tr>
+      <tr><td>Controller</td><td>8BitDo Ultimate 2</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- CERTS -->
+<section id="certifications">
+  <h2>Certifications</h2>
+  <p class="sub">Six certifications.</p>
+  <table class="fade">
+    <tr><th>Certification</th><th>Area</th></tr>
+    <tr><td style="color:var(--ink)">CCNA</td><td>Networking</td></tr>
+    <tr><td style="color:var(--ink)">Network Pro</td><td>Networking</td></tr>
+    <tr><td style="color:var(--ink)">PC Pro</td><td>Computer hardware and support</td></tr>
+    <tr><td style="color:var(--ink)">Linux Pro</td><td>Linux administration</td></tr>
+    <tr><td style="color:var(--ink)">Security Pro</td><td>Cybersecurity</td></tr>
+    <tr><td style="color:var(--ink)">Cisco IT Essentials</td><td>IT fundamentals</td></tr>
+  </table>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <h2>Skills</h2>
+  <p class="sub">Strongest areas first.</p>
+  <table class="rank fade">
+    <tr><td>1</td><td style="color:var(--ink)">Networking</td><td class="lv"><span class="meter"><i data-w="95"></i></span>Strong</td></tr>
+    <tr><td>2</td><td style="color:var(--ink)">IT support &amp; troubleshooting</td><td class="lv"><span class="meter"><i data-w="92"></i></span>Strong</td></tr>
+    <tr><td>3</td><td style="color:var(--ink)">Computer hardware</td><td class="lv"><span class="meter"><i data-w="90"></i></span>Strong</td></tr>
+    <tr><td>4</td><td style="color:var(--ink)">Linux administration</td><td class="lv"><span class="meter"><i data-w="72"></i></span>Good</td></tr>
+    <tr><td>5</td><td style="color:var(--ink)">Systems administration</td><td class="lv"><span class="meter"><i data-w="70"></i></span>Good</td></tr>
+    <tr><td>6</td><td style="color:var(--ink)">Virtualization &amp; homelab</td><td class="lv"><span class="meter"><i data-w="68"></i></span>Good</td></tr>
+    <tr><td>7</td><td style="color:var(--ink)">Cybersecurity</td><td class="lv"><span class="meter"><i data-w="55"></i></span>Foundational–Good</td></tr>
+    <tr><td>8</td><td style="color:var(--ink)">Software engineering</td><td class="lv"><span class="meter"><i data-w="38"></i></span>Developing</td></tr>
+  </table>
+
+  <h4 style="margin-top:36px">Full list</h4>
+  <ul class="cols fade">
+    <li>Computer hardware troubleshooting</li><li>PC assembly &amp; maintenance</li><li>IT technical support</li><li>Windows administration</li><li>Linux administration</li><li>Network troubleshooting</li><li>TCP/IP networking</li><li>IPv4 addressing &amp; subnetting</li><li>Routing &amp; switching</li><li>VLAN configuration</li><li>DNS &amp; DHCP</li><li>Firewall configuration</li><li>Network security</li><li>Cybersecurity fundamentals</li><li>Virtualization (Hyper-V)</li><li>Docker &amp; containerization</li><li>Server administration</li><li>Ubuntu Server</li><li>Python programming</li><li>HTML, CSS &amp; JavaScript</li><li>Git &amp; GitLab</li><li>Software troubleshooting</li><li>Technical documentation</li><li>Analytical problem-solving</li>
+  </ul>
+</section>
+</div>
+
+<footer><div class="wrap"><span>Homelab · theme <span id="hex" style="font-family:var(--mono)"></span></span><span>Updated November 2026</span></div></footer>
+<script>document.getElementById('hex').textContent=window.__themeHex||'';</script>
+
+<script>
+/* fade-ins + meters */
+(()=>{
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');e.target.querySelectorAll('.meter i').forEach(m=>m.style.width=m.dataset.w+'%');io.unobserve(e.target)}),{threshold:.1});
+  document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+})();
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="rack3d.js"></script>
+<div class="kmodal" id="kmodal" role="dialog" aria-modal="true" aria-label="Homelab Dono">
+  <div class="kpanel"><button class="kclose" id="kclose" aria-label="Close">×</button><div id="kslot"></div></div>
+</div>
+<script>
+(function(){
+  var btn=document.querySelector('.kofi'), m=document.getElementById('kmodal'), slot=document.getElementById('kslot');
+  // Popup mode is on when <html data-kofi="popup"> (self-hosted build). Artifact hosting blocks the Ko-fi frame, so it falls back to the link.
+  if(document.documentElement.dataset.kofi!=='popup') return;
+  function open(e){
+    e.preventDefault();
+    if(!slot.firstChild){var f=document.createElement('iframe');f.id='kofiframe';f.title='homelabdono';f.src='https://ko-fi.com/homelabdono/?hidefeed=true&widget=true&embed=true&preview=true';slot.style.height='100%';slot.appendChild(f);}
+    m.classList.add('on');requestAnimationFrame(function(){m.classList.add('show')});document.body.style.overflow='hidden';
+  }
+  function close(){m.classList.remove('show');setTimeout(function(){m.classList.remove('on')},200);document.body.style.overflow='';}
+  btn.addEventListener('click',open);
+  document.getElementById('kclose').addEventListener('click',close);
+  m.addEventListener('click',function(e){if(e.target===m)close()});
+  addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('on'))close()});
+})();
+</script>
+</body>
+</html>
