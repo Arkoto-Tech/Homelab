@@ -112,6 +112,23 @@ footer .wrap{display:flex;justify-content:space-between}
 .kmodal.show .kpanel{transform:none}
 .kpanel iframe{border:none;width:100%;height:100%;padding:4px;background:#f9f9f9;display:block}
 .kclose{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:0;background:#00b9fe;color:#fff;font-size:18px;line-height:32px;cursor:pointer;z-index:2}
+.pending{border:1px dashed var(--line2);border-radius:12px;padding:20px 22px;margin-top:14px;background:color-mix(in srgb,var(--paper) 60%,transparent)}
+.pending p{color:var(--ink2);margin:12px 0 2px}
+.pending table{margin-top:10px}
+.pending tr:last-child td{border-bottom:0}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#f2c14e;border:1px solid rgba(242,193,78,.35);border-radius:999px;padding:3px 11px}
+.pill i{width:7px;height:7px;border-radius:50%;background:#f2c14e;animation:pp 1.8s ease-in-out infinite}
+@keyframes pp{50%{opacity:.25}}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:18px;position:relative}
+.steps li{position:relative;padding-top:20px;font-size:14px}
+.steps li:before{content:"";position:absolute;top:4px;left:0;width:10px;height:10px;border-radius:50%;border:2px solid var(--line2);background:var(--bg);z-index:1}
+.steps li:after{content:"";position:absolute;top:9px;left:12px;right:0;height:2px;background:var(--line)}
+.steps li:last-child:after{display:none}
+.steps li.now:before{border-color:#f2c14e;background:#f2c14e;box-shadow:0 0 0 4px rgba(242,193,78,.15)}
+.steps b{display:block;font-weight:600}
+.steps span{color:var(--mu);font-size:13px}
+@media(max-width:640px){.steps{grid-template-columns:1fr 1fr;row-gap:14px}.steps li:nth-child(2):after{display:none}}
+@media(prefers-reduced-motion:reduce){.pill i{animation:none}}
 </style>
 <script>
 (function(){
@@ -143,7 +160,7 @@ footer .wrap{display:flex;justify-content:space-between}
 <div class="wrap">
 <header>
   <h1>My homelab</h1>
-  <p>Two servers and a Cisco switch that I use to learn virtualization, storage, Active Directory, networking and self-hosting. Specs, upgrade plans and certifications are below.</p>
+  <p>A Cisco Catalyst 9300 switch and a media server that I use to learn networking, virtualization and self-hosting, with a 2U lab server on the way. Specs, upgrade plans and certifications are below.</p>
   <div class="support">
     <a class="kofi" href="https://ko-fi.com/homelabdono" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M10 11.5c-.8-.9-2.4-.4-2.4.9 0 1.2 2.4 2.6 2.4 2.6s2.4-1.4 2.4-2.6c0-1.3-1.6-1.8-2.4-.9Z" fill="currentColor"/></svg>Homelab Dono</a>
     <span>Help fund the next upgrade on Ko-fi</span>
@@ -158,10 +175,10 @@ footer .wrap{display:flex;justify-content:space-between}
   </div>
 
   <div class="summary fade">
-    <div><b>2</b><span>servers</span></div>
-    <div><b>24 cores</b><span>across the lab</span></div>
-    <div><b>48 GB</b><span>lab memory</span></div>
-    <div><b>8 TB</b><span>lab storage</span></div>
+    <div><b>1 + 1</b><span>servers (1 on the way)</span></div>
+    <div><b>48 + 2</b><span>switch ports (UPOE + 25G)</span></div>
+    <div><b>16 GB</b><span>lab memory</span></div>
+    <div><b>2 TB</b><span>lab storage</span></div>
   </div>
 </header>
 
@@ -171,28 +188,21 @@ footer .wrap{display:flex;justify-content:space-between}
   <p class="sub">The always-on part of the lab.</p>
 
   <div class="fade" id="server1">
-    <h3 style="margin-bottom:4px">Server 1 <span class="role">Main lab server · 2U rackmount</span></h3>
-    <figure>
-      <div class="photo"><img src="server1.jpg" alt="Cisco UCS C240 M3 rackmount server"></div>
-      <figcaption>Cisco UCS C240 M3</figcaption>
-    </figure>
-    <table>
-      <tr><td>Model</td><td>Cisco UCS C240 M3 (2U)</td></tr>
-      <tr><td>CPU</td><td>2× Intel Xeon E5-2680 v2<br><small>20 cores / 40 threads, up to 3.6 GHz</small></td></tr>
-      <tr><td>Memory</td><td>32 GB DDR3 ECC</td></tr>
-      <tr><td>Storage</td><td>6 TB</td></tr>
-      <tr><td>GPU</td><td>AMD Radeon RX 590 8 GB</td></tr>
-      <tr><td>Hypervisor</td><td>Proxmox VE</td></tr>
-    </table>
-    <h4>What it runs</h4>
-    <div class="runs"><span>Proxmox</span><span>TrueNAS</span><span>Active Directory</span><span>Pi-hole</span><span>Apache</span><span>Docker</span><span>Virtual machines</span><span>llama.cpp (light models)</span><span>Minecraft server dashboard</span></div>
-    <h4>Planned upgrades</h4>
-    <table>
-      <tr><td>Memory</td><td>128 GB DDR3 ECC 1600 MHz</td><td class="price">$70</td></tr>
-      <tr><td>Cooling</td><td>8× Delta AFC0612D fans</td><td class="price">$72</td></tr>
-      <tr><td>Cooling</td><td>Supermicro SNK-P0048AP4 2U active CPU heatsink</td><td class="price">$70</td></tr>
-      <tr class="total"><td>Total</td><td></td><td class="price">$212</td></tr>
-    </table>
+    <h3>Server 1 <span class="role">Main lab server · 2U rackmount</span></h3>
+    <div class="pending">
+      <span class="pill"><i></i>In progress</span>
+      <p>I'm in the process of securing a 2U server. This site will be updated once I find and acquire it.</p>
+      <table>
+        <tr><td>Target date</td><td>Picked out and purchased by <b>December 15, 2026</b></td></tr>
+        <tr><td>Form factor</td><td>2U rackmount</td></tr>
+      </table>
+      <ol class="steps">
+        <li class="now"><b>Searching</b><span>Comparing options</span></li>
+        <li><b>Picked out</b><span>Model chosen</span></li>
+        <li><b>Purchased</b><span>By Dec 15, 2026</span></li>
+        <li><b>Installed</b><span>Specs added here</span></li>
+      </ol>
+    </div>
   </div>
 
   <div class="fade" id="server2">
@@ -211,7 +221,8 @@ footer .wrap{display:flex;justify-content:space-between}
   <div class="fade" id="switch">
     <h3>Network <span class="role">Switching</span></h3>
     <table>
-      <tr><td>Switch</td><td>Cisco Catalyst 2960G<br><small>Managed Gigabit switch</small></td></tr>
+      <tr><td>Switch</td><td>Cisco Catalyst 9300 · 48-port UPOE (2024)<br><small>1U managed Layer 3 switch</small></td></tr>
+      <tr><td>Network module</td><td>2× 25G SFP28 uplinks<br><small>Cisco C9300-NM-2Y</small></td></tr>
       <tr><td>Rack</td><td>Hand-built from 2×2 lumber and plywood<br><small>30 in deep, 19 in mounting rails</small></td></tr>
     </table>
   </div>
