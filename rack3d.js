@@ -1,4 +1,4 @@
-/* 3D rack model — all dimensions in inches. Rack-space origin: floor centre, +z = front. */
+/* 3D rack model — Catalyst 9300, Server 1 placeholder, Server 2. All dimensions in inches. Rack-space origin: floor centre, +z = front. */
 (() => {
 const stage = document.getElementById('stage'), canvas = document.getElementById('c'), tip = document.getElementById('tip'), fb = document.getElementById('fb');
 if (!window.THREE) { fb.style.display = 'flex'; return; }
@@ -166,162 +166,97 @@ function outline(group, w, h, d, zc) {
 }
 function register(group, name, info, target) { group.traverse(o => { if (o.isMesh) o.userData.device = group; }); group.userData.name = name; group.userData.info = info; group.userData.target = target; devices.push(group); }
 
-/* ================= CISCO UCS C240 M3 — 2U, 17.1 × 3.43 × 28.4 in ================= */
-const U = { w: 17.1, h: 3.43, d: 28.4 };
-const ucsFront = tex(U.w, U.h, 120, (g, w, h) => {
-  g.fillStyle = '#25282c'; g.fillRect(0, 0, w, h);
-  g.fillStyle = '#8f9499'; g.fillRect(0, 0, w, .2); brushed(g, w, .2, 40, .2);
-  for (let x = .3; x < w; x += .45) circ(g, '#3a3e42', x, .1, .035);
-  g.fillStyle = '#6f7479'; g.fillRect(0, h - .1, w, .1);
-  for (let i = 0; i < 24; i++) {
-    const x0 = .15 + i * .7;
-    if (i < 15) {
-      g.fillStyle = '#0a0b0c'; g.fillRect(x0 + .04, .24, .62, 3.06);
-      g.fillStyle = '#1e2124'; g.fillRect(x0 + .04, .24, .07, 3.06); g.fillRect(x0 + .59, .24, .07, 3.06);
-      g.fillStyle = '#16181a'; g.fillRect(x0 + .14, 2.95, .42, .26);
-      for (let y = .6; y < 2.8; y += .35) { g.fillStyle = '#25292d'; g.fillRect(x0 + .1, y, .03, .12); g.fillRect(x0 + .57, y, .03, .12); }
-    } else {
-      fillRR(g, '#7d8287', x0 + .03, .24, .64, 3.07, .03);
-      g.save(); g.beginPath(); g.rect(x0 + .03, .24, .64, 3.07); g.clip(); brushed(g, w, h, 140, .15, true); g.restore();
-      circ(g, '#141618', x0 + .18, .36, .045); circ(g, '#141618', x0 + .52, .36, .045);
-      fillRR(g, '#dcdedf', x0 + .12, .5, .46, .5, .02); g.fillStyle = '#9a9c9e'; for (let k = 0; k < 4; k++) g.fillRect(x0 + .16, .58 + k * .1, .3 - k * .04, .025);
-      fillRR(g, '#5a5f64', x0 + .1, 1.12, .5, 2.02, .05);
-      g.fillStyle = '#3a3e42'; g.fillRect(x0 + .3, 1.2, .1, 1.82);
-      for (let y = 1.25; y < 2.8; y += .16) { g.fillStyle = '#2a2d30'; g.fillRect(x0 + .15, y, .1, .07); g.fillRect(x0 + .45, y, .1, .07); }
-      fillRR(g, '#2b2e31', x0 + .17, 2.86, .36, .24, .04);
-    }
-    g.fillStyle = '#141619'; g.fillRect(x0, .2, .03, h - .3);
-  }
-});
-const ucsEarL = tex(.95, U.h, 120, (g, w, h) => {
-  g.fillStyle = '#1c1e21'; g.fillRect(0, 0, w, h); speck(g, w, h, 300, .08, .02);
-  screwHole(g, w / 2, .42, .12); screwHole(g, w / 2, h - .42, .12);
-  fillRR(g, '#9aa0a6', .2, .95, .55, 1.5, .1); fillRR(g, '#2a2d31', .27, 1.03, .41, 1.34, .08);
-  for (let r = 0; r < 13; r++) circ(g, '#c9cdd2', .4 + (r % 2) * .15, 1.12 + r * .095, .025);
-});
-const ucsEarR = tex(.95, U.h, 120, (g, w, h) => {
-  g.fillStyle = '#1c1e21'; g.fillRect(0, 0, w, h); speck(g, w, h, 300, .08, .02);
-  screwHole(g, w / 2, .42, .12); screwHole(g, w / 2, h - .42, .12);
-  circ(g, '#3b3f44', w / 2, 1.0, .22); circ(g, '#121315', w / 2, 1.0, .15);
-  for (let k = 0; k < 4; k++) circ(g, '#0e0f10', w / 2, 1.45 + k * .22, .05);
-  circ(g, '#2f4f78', w / 2, 2.55, .12);
-});
-const ucsTop = tex(U.w, U.d, 30, (g, w, h) => {
-  g.fillStyle = '#b8bcc0'; g.fillRect(0, 0, w, h); brushed(g, w, h, 500, .06);
-  g.fillStyle = '#aeb2b6'; g.fillRect(0, h - 6.6, w, 6.6);
-  g.fillStyle = '#80858a'; g.fillRect(0, h - 6.62, w, .06); g.fillRect(0, h - 10.7, w, .05);
-  for (let x = 1; x < w; x += 1.8) for (let y = h - 6; y < h - .5; y += 1.6) circ(g, '#55595d', x + (y % 2), y, .07);
-  g.fillStyle = '#2b2e31'; for (let y = h - 10.3; y < h - 8.9; y += .28) for (let x = 1; x < w - 1; x += .3) g.fillRect(x, y, .2, .12);
-  fillRR(g, '#e9e8e3', 11.4, h - 14.6, 4.3, 2.9, .05);
-  g.fillStyle = '#b3b2ad'; for (let k = 0; k < 7; k++) g.fillRect(11.65, h - 14.3 + k * .32, 2.4 - (k % 3) * .3, .08);
-  g.fillStyle = '#f0c93a'; g.fillRect(14.3, h - 14.35, 1.15, 1.05); g.fillStyle = '#1b1b1b'; g.fillRect(14.45, h - 14.2, .85, .75);
-  g.fillStyle = '#2b2e31'; for (let y = .4; y < 1.6; y += .3) for (let x = 1.2; x < w - 1; x += .5) g.fillRect(x, y, .3, .1);
-  for (const x of [.25, w - .25]) for (let y = 1; y < h; y += 3) circ(g, '#6d7176', x, y, .06);
-});
-const ucsSide = tex(U.d, U.h, 30, (g, w, h) => {
-  g.fillStyle = '#a7abb0'; g.fillRect(0, 0, w, h); brushed(g, w, h, 160, .07);
-  g.fillStyle = '#868a8f'; g.fillRect(0, .12, w, .04);
-  for (let x = 1; x < w; x += 4.5) circ(g, '#6c7075', x, h - .4, .07);
-});
-const ucsBack = tex(U.w, U.h, 100, (g, w, h) => {
-  g.fillStyle = '#8f9499'; g.fillRect(0, 0, w, h); brushed(g, w, h, 150, .1);
-  for (let k = 0; k < 5; k++) {
-    const x = .35 + k * 1.15;
-    if (k === 1) {
-      fillRR(g, '#2b2d30', x, .25, .85, 2.15, .03);
-      [[.45, 'dp'], [.9, 'dp'], [1.35, 'dp'], [1.8, 'hd']].forEach(([y, t]) => { fillRR(g, '#0b0b0c', x + .25, y, .35, t === 'hd' ? .38 : .32, .03); g.fillStyle = '#c7c7c7'; g.fillRect(x + .31, y + .1, .23, .03); });
-    } else {
-      fillRR(g, '#a7abb0', x, .25, .85, 2.15, .03); slots(g, x + .12, .45, .6, 1.7, .16, .22, .09, .14, '#3a3e42', true);
-    }
-    circ(g, '#5c6065', x + .42, .35, .06);
-  }
-  fillRR(g, '#7a7f84', 6.3, 2.45, 4.8, .85, .03);
-  fillRR(g, '#2f5aa8', 6.45, 2.62, .78, .45, .07); for (let k = 0; k < 5; k++) circ(g, '#0e1d36', 6.6 + k * .12, 2.78, .025);
-  usb(g, 7.4, 2.68, .52, .22); usb(g, 7.4, 2.95, .52, .22);
-  rj45(g, 8.4, 2.6, .6, .55, false); rj45(g, 9.1, 2.6, .6, .55, false); rj45(g, 9.8, 2.6, .6, .55, false);
-  g.fillStyle = '#e5e5e5'; g.font = '0.11px sans-serif'; g.fillText('M', 8.62, 2.55); g.fillText('1', 9.35, 2.55); g.fillText('2', 10.05, 2.55);
-  holes(g, 6.4, .35, 4.6, 1.9, .2, .07, '#2a2d30');
-  for (const x of [11.35, 14.2]) {
-    fillRR(g, '#2b2e32', x, 1.35, 2.75, 1.95, .05);
-    circ(g, '#111214', x + .85, 2.32, .66); for (let r = .6; r > .05; r -= .12) { g.strokeStyle = '#3c4046'; g.lineWidth = .025; g.beginPath(); g.arc(x + .85, 2.32, r, 0, 7); g.stroke(); }
-    g.strokeStyle = '#3c4046'; g.beginPath(); g.moveTo(x + .2, 2.32); g.lineTo(x + 1.5, 2.32); g.moveTo(x + .85, 1.67); g.lineTo(x + .85, 2.97); g.stroke();
-    c14(g, x + 1.75, 1.85, .7, .55);
-    fillRR(g, '#76b947', x + 2.5, 1.5, .17, 1.65, .05);
-    circ(g, '#0f1010', x + 2.1, 2.75, .05);
-  }
-  holes(g, 11.4, .35, 5.5, .85, .2, .07, '#2a2d30');
-});
-const ucs = new THREE.Group(); rack.add(ucs);
-ucs.position.set(0, uBottom(8) + U.h / 2, FRONT);
-const ucsMetal = { roughness: .42, metalness: .55 };
-faced(U.w, U.h, U.d, { front: mapMat(ucsFront, { roughness: .5, metalness: .35 }), back: mapMat(ucsBack, ucsMetal), top: mapMat(ucsTop, ucsMetal), side: mapMat(ucsSide, ucsMetal), bottom: steel }, ucs, 0, 0, -U.d / 2);
-faced(.95, U.h, .14, { front: mapMat(ucsEarL, { roughness: .5, metalness: .3 }), back: darkMetal, top: darkMetal, side: darkMetal }, ucs, -(U.w / 2 + .475), 0, .07);
-faced(.95, U.h, .14, { front: mapMat(ucsEarR, { roughness: .5, metalness: .3 }), back: darkMetal, top: darkMetal, side: darkMetal }, ucs, (U.w / 2 + .475), 0, .07);
-for (const sx of [-1, 1]) for (const y of [U.h / 2 - .42, -U.h / 2 + .42]) screw(ucs, sx * (U.w / 2 + .475), y, .18);
-// green touch points on the lid
-const green = std({ color: 0x8ccf3f, roughness: .6, metalness: 0 });
-for (const x of [-4.6, 4.6]) { const b = box(1.6, .08, 1.0, green, ucs, x, U.h / 2 + .04, -8.2); }
-// slide rails
-for (const s of [-1, 1]) box(.3, 1.4, 28.2, steel, rack, s * 8.72, ucs.position.y, FRONT - 14.1 - .2);
-// LEDs: drives, ear
-for (let i = 15; i < 24; i++) {
-  const x = -U.w / 2 + .15 + i * .7;
-  led(ucs, x + .18, U.h / 2 - .36, .01, 0x46e36a, 'flicker');
-  led(ucs, x + .52, U.h / 2 - .36, .01, 0x46e36a, 'steady');
+/* ================= SERVER 1 PLACEHOLDER — 2U, not yet acquired ================= */
+const PHW = 17.2, PHH = 3.45, PHD = 26;
+const ph = new THREE.Group(); rack.add(ph);
+ph.position.set(0, uBottom(8) + 3.5 / 2, FRONT);
+const ghostCol = 0x9fb6cc;
+const ghost = new THREE.MeshStandardMaterial({ color: ghostCol, transparent: true, opacity: .1, roughness: .4, metalness: 0, depthWrite: false });
+const phBody = new THREE.Mesh(new THREE.BoxGeometry(PHW, PHH, PHD), ghost); phBody.position.z = -PHD / 2; ph.add(phBody);
+const phEdges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(PHW, PHH, PHD)), new THREE.LineDashedMaterial({ color: ghostCol, dashSize: .6, gapSize: .35, transparent: true, opacity: .75 }));
+phEdges.computeLineDistances(); phEdges.position.z = -PHD / 2; ph.add(phEdges);
+for (const s of [-1, 1]) {
+  const ear = new THREE.Mesh(new THREE.BoxGeometry(.9, PHH, .12), ghost); ear.position.set(s * (PHW / 2 + .45), 0, .06); ph.add(ear);
+  const ee = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(.9, PHH, .12)), new THREE.LineBasicMaterial({ color: ghostCol, transparent: true, opacity: .6 })); ee.position.copy(ear.position); ph.add(ee);
 }
-const earRX = U.w / 2 + .475;
-led(ucs, earRX, U.h / 2 - 1.0, .15, 0x46e36a, 'steady', .17).scale.set(1, 1, 1);
-led(ucs, earRX, U.h / 2 - 1.0, .151, 0x121315, 'steady', .12);
-for (let k = 0; k < 4; k++) led(ucs, earRX, U.h / 2 - 1.45 - k * .22, .15, k === 3 ? 0x4aa3ff : 0x46e36a, k === 1 ? 'blink' : 'steady');
-for (const x of [11.35, 14.2]) led(ucs, U.w / 2 - (x + 2.1), U.h / 2 - 2.75, -U.d - .01, 0x46e36a, 'steady').rotation.y = Math.PI;
-outline(ucs, U.w + 1.9, U.h, U.d, -U.d / 2);
-register(ucs, 'Server 1 · Cisco UCS C240 M3', '2× Xeon E5-2680 v2 · 32 GB ECC · 6 TB · RX 590', '#server1');
+const phFace = tex(PHW, PHH, 110, (g, w, h) => {
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = 'rgba(20,28,38,.55)'; g.fillRect(0, 0, w, h);
+  g.strokeStyle = 'rgba(159,182,204,.55)'; g.lineWidth = .025; g.setLineDash([.18, .12]); rr(g, .25, .25, w - .5, h - .5, .12); g.stroke(); g.setLineDash([]);
+  g.fillStyle = 'rgba(230,238,246,.95)'; g.font = '600 0.62px sans-serif'; g.textAlign = 'center'; g.fillText('2U LAB SERVER', w / 2, 1.5);
+  g.fillStyle = 'rgba(242,193,78,.95)'; g.font = '500 0.36px sans-serif'; g.fillText('In progress · target 12/15/26', w / 2, 2.15);
+  g.fillStyle = 'rgba(210,222,234,.85)'; g.font = '0.27px sans-serif'; g.fillText('Specs will be added once acquired', w / 2, 2.7);
+});
+phFace.encoding = THREE.sRGBEncoding;
+const phFront = new THREE.Mesh(new THREE.PlaneGeometry(PHW, PHH), new THREE.MeshBasicMaterial({ map: phFace, transparent: true, toneMapped: false, depthWrite: false }));
+phFront.position.z = .015; ph.add(phFront);
+ph.userData.pulse = [ghost];
+outline(ph, PHW + 1.8, PHH, PHD, -PHD / 2);
+register(ph, 'Server 1 · coming soon', 'Securing a 2U server · target Dec 15, 2026', '#server1');
 
-/* ================= CATALYST 2960G — 1U, 17.5 × 1.73 × 13 in ================= */
-const S = { w: 17.5, h: 1.73, d: 13 };
-const portXY = (n) => { const col = Math.floor((n - 1) / 2), row = (n - 1) % 2; return { x: 2.6 + col * .82 + (col >= 6 ? .45 : 0) + .33, y: row ? 1.21 : .53, row }; };
-const swFront = tex(S.w, S.h, 120, (g, w, h) => {
-  g.fillStyle = '#39414b'; g.fillRect(0, 0, w, h); speck(g, w, h, 1500, .06, .015);
-  g.fillStyle = '#2a3038'; g.fillRect(0, 0, w, .06); g.fillRect(0, h - .06, w, .06);
-  g.fillStyle = '#cfd5dc'; g.font = '0.12px sans-serif';
-  ['SYST', 'RPS', 'STAT', 'DUPLX', 'SPEED'].forEach((t, i) => { circ(g, '#15181b', .45, .3 + i * .27, .045); g.fillText(t, .58, .34 + i * .27); });
-  fillRR(g, '#1d2126', 1.35, 1.25, .5, .24, .05); g.fillText('MODE', 1.38, 1.18);
-  for (let n = 1; n <= 24; n++) { const p = portXY(n); rj45(g, p.x - .33, p.y - .25, .66, .5, p.row === 0); circ(g, '#15181b', p.x, p.row ? 1.6 : .13, .035); }
-  g.strokeStyle = '#5d6670'; g.lineWidth = .015; rr(g, 2.5, .2, 12 * .82 + .45 + .2, 1.33, .05); g.stroke();
-  for (let k = 0; k < 2; k++) {
-    const x = 13.25 + k * .75;
-    fillRR(g, '#a9b0b7', x, .28, .6, .42, .03); g.fillStyle = '#0c0d0e'; g.fillRect(x + .06, .33, .48, .32);
-    rj45(g, x - .03, .96, .66, .5, false);
-  }
-  g.fillStyle = '#cfd5dc'; g.font = '0.19px sans-serif'; g.fillText('Catalyst 2960G Series', 15.0, .78);
-  g.font = '0.11px sans-serif'; g.fillText('24 × 10/100/1000', 15.0, 1.02);
+/* ================= CATALYST 9300 48-port UPOE — 1U, 17.5 × 1.73 × 17.5 in, C9300-NM-2Y module ================= */
+const S = { w: 17.5, h: 1.73, d: 17.5 };
+const portXY = (n) => { const col = Math.floor((n - 1) / 2), row = (n - 1) % 2; return { x: 2.1 + col * .5 + Math.floor(col / 6) * .25 + .22, y: row ? 1.23 : .5, row }; };
+const swFront = tex(S.w, S.h, 130, (g, w, h) => {
+  g.fillStyle = '#1e2227'; g.fillRect(0, 0, w, h); speck(g, w, h, 1800, .05, .012);
+  g.fillStyle = '#2c3138'; g.fillRect(0, 0, w, .05); g.fillRect(0, h - .05, w, .05);
+  g.fillStyle = '#c9d0d8'; g.font = '0.095px sans-serif';
+  ['SYST', 'ACTV', 'STCK', 'SPED', 'PoE'].forEach((t, i) => { circ(g, '#0f1113', .22, .3 + i * .27, .04); g.fillText(t, .32, .33 + i * .27); });
+  usb(g, 1.15, .26, .5, .2); g.fillText('USB', 1.72, .4);
+  fillRR(g, '#0b0c0d', 1.2, .6, .4, .15, .05); g.fillStyle = '#c9d0d8'; g.fillText('CON', 1.72, .72);
+  circ(g, '#2b5d9e', 1.32, 1.02, .09); g.fillStyle = '#c9d0d8'; g.fillText('BEACON', 1.48, 1.05);
+  fillRR(g, '#0f1113', 1.15, 1.25, .5, .22, .05); g.fillStyle = '#c9d0d8'; g.fillText('MODE', 1.72, 1.4);
+  for (let n = 1; n <= 48; n++) { const p = portXY(n); rj45(g, p.x - .22, p.y - .2, .44, .4, p.row === 0); circ(g, '#0f1113', p.x, p.row ? 1.57 : .16, .03); }
+  g.strokeStyle = '#3b424b'; g.lineWidth = .012;
+  for (let b = 0; b < 4; b++) { const x = 2.04 + b * (6 * .5 + .25); rr(g, x, .08, 6 * .5 + .04, 1.57, .04); g.stroke(); }
+  g.fillStyle = '#8e97a1'; g.font = '0.09px sans-serif';
+  for (let b = 0; b < 4; b++) { const x = 2.1 + b * 3.25; g.fillText(String(b * 12 + 1), x, .07 + .0); }
+  // network module: C9300-NM-2Y (2× 25G SFP28)
+  fillRR(g, '#2a2f36', 15.0, .12, 2.38, 1.49, .05);
+  circ(g, '#9aa1a9', 15.18, .87, .09); circ(g, '#9aa1a9', 17.2, .87, .09);
+  for (const x of [15.42, 16.22]) { fillRR(g, '#b9c0c7', x, .5, .66, .5, .03); g.fillStyle = '#0a0b0c'; g.fillRect(x + .07, .56, .52, .38); g.fillStyle = '#2b2f34'; g.fillRect(x + .12, .62, .42, .05); }
+  circ(g, '#0f1113', 15.75, .33, .03); circ(g, '#0f1113', 16.55, .33, .03);
+  g.fillStyle = '#c9d0d8'; g.font = '0.1px sans-serif'; g.fillText('25G  1', 15.5, 1.18); g.fillText('25G  2', 16.3, 1.18);
+  g.font = '0.085px sans-serif'; g.fillStyle = '#8e97a1'; g.fillText('C9300-NM-2Y', 15.55, 1.45);
 });
-const swEar = tex(.75, S.h, 120, (g, w, h) => { g.fillStyle = '#2f353c'; g.fillRect(0, 0, w, h); screwHole(g, w / 2, .35, .11); screwHole(g, w / 2, h - .35, .11); });
 const swTop = tex(S.w, S.d, 30, (g, w, h) => {
-  g.fillStyle = '#4a5058'; g.fillRect(0, 0, w, h); speck(g, w, h, 2500, .05, .04);
-  slots(g, .5, h - 5, 1.6, 4, .3, .45, .12, .3, '#25292e'); slots(g, w - 2.1, h - 5, 1.6, 4, .3, .45, .12, .3, '#25292e');
-  fillRR(g, '#d9dad6', 6, 3, 4, 2, .05); g.fillStyle = '#9fa09b'; for (let k = 0; k < 5; k++) g.fillRect(6.3, 3.3 + k * .3, 3 - k * .3, .08);
+  g.fillStyle = '#3b4047'; g.fillRect(0, 0, w, h); speck(g, w, h, 3000, .05, .04);
+  slots(g, .5, 2, 1.5, h - 4, .3, .45, .12, .3, '#1f2327'); slots(g, w - 2, 2, 1.5, h - 4, .3, .45, .12, .3, '#1f2327');
+  fillRR(g, '#dcdcd7', 6.2, 4, 4.6, 2.4, .05); g.fillStyle = '#9fa09b'; for (let k = 0; k < 6; k++) g.fillRect(6.5, 4.3 + k * .3, 3.4 - k * .35, .08);
+  g.fillStyle = '#2b2b2b'; g.font = '0.26px sans-serif'; g.fillText('Catalyst 9300', 6.5, 6.15);
 });
-const swSide = tex(S.d, S.h, 30, (g, w, h) => { g.fillStyle = '#434951'; g.fillRect(0, 0, w, h); slots(g, 1, .3, w - 2, 1.1, .32, .4, .14, .28, '#1e2226'); });
+const swSide = tex(S.d, S.h, 30, (g, w, h) => { g.fillStyle = '#383d44'; g.fillRect(0, 0, w, h); slots(g, 1, .3, w - 2, 1.1, .3, .4, .14, .28, '#1a1d21'); });
 const swBack = tex(S.w, S.h, 100, (g, w, h) => {
-  g.fillStyle = '#3d434a'; g.fillRect(0, 0, w, h); speck(g, w, h, 900, .05, .02);
-  rj45(g, 1.4, .58, .6, .55, false); g.strokeStyle = '#4c8fd6'; g.lineWidth = .03; rr(g, 1.36, .54, .68, .63, .04); g.stroke();
-  g.fillStyle = '#cfd5dc'; g.font = '0.1px sans-serif'; g.fillText('CONSOLE', 1.36, .45);
-  for (const cx of [5.2, 8.2]) { circ(g, '#15181b', cx, .86, .62); for (let r = .55; r > .05; r -= .1) { g.strokeStyle = '#3d434a'; g.lineWidth = .03; g.beginPath(); g.arc(cx, .86, r, 0, 7); g.stroke(); } }
-  fillRR(g, '#15181b', 11.6, .5, 1.6, .7, .05); g.fillText('RPS', 11.6, .42);
-  c14(g, 15.2, .58, .7, .55);
+  g.fillStyle = '#34393f'; g.fillRect(0, 0, w, h); speck(g, w, h, 1000, .05, .02);
+  g.fillStyle = '#c9d0d8'; g.font = '0.1px sans-serif';
+  for (const x of [.3, 1.2]) { fillRR(g, '#141618', x, .5, .75, .6, .06); fillRR(g, '#d8b23a', x + .2, .62, .35, .1, .02); }
+  g.fillText('STACK PWR', .3, .42);
+  for (const x of [2.4, 3.75]) { fillRR(g, '#141618', x, .5, 1.2, .62, .05); fillRR(g, '#262a2f', x + .12, .6, .96, .42, .04); }
+  g.fillStyle = '#c9d0d8'; g.fillText('STACK 1', 2.4, .42); g.fillText('STACK 2', 3.75, .42);
+  rj45(g, 5.3, .55, .55, .5, false); g.fillStyle = '#c9d0d8'; g.fillText('MGMT', 5.3, .45);
+  for (const x of [6.6, 7.75, 8.9]) { fillRR(g, '#24282d', x, .2, 1.05, 1.33, .05); circ(g, '#0e0f11', x + .52, .86, .46); for (let r = .42; r > .05; r -= .09) { g.strokeStyle = '#3a3f46'; g.lineWidth = .025; g.beginPath(); g.arc(x + .52, .86, r, 0, 7); g.stroke(); } }
+  for (const x of [11.6, 14.5]) {
+    fillRR(g, '#26292d', x, .14, 2.75, 1.45, .05); holes(g, x + .15, .3, 1.2, 1.15, .16, .055, '#0d0e10');
+    c14(g, x + 1.8, .55, .7, .58); fillRR(g, '#7fb34a', x + 2.55, .3, .12, 1.1, .04); circ(g, '#0f1010', x + 1.6, 1.3, .045);
+  }
 });
 const sw = new THREE.Group(); rack.add(sw);
 sw.position.set(0, uBottom(11) + S.h / 2, FRONT);
 const swM = { roughness: .5, metalness: .4 };
 faced(S.w, S.h, S.d, { front: mapMat(swFront, swM), back: mapMat(swBack, swM), top: mapMat(swTop, swM), side: mapMat(swSide, swM), bottom: darkMetal }, sw, 0, 0, -S.d / 2);
+const swEar = tex(.75, S.h, 120, (g, w, h) => { g.fillStyle = '#2a2e34'; g.fillRect(0, 0, w, h); screwHole(g, w / 2, .35, .11); screwHole(g, w / 2, h - .35, .11); });
 for (const s of [-1, 1]) { faced(.75, S.h, .12, { front: mapMat(swEar, swM), back: darkMetal, top: darkMetal, side: darkMetal }, sw, s * (S.w / 2 + .375), 0, .06); screw(sw, s * (S.w / 2 + .375), S.h / 2 - .35, .14); screw(sw, s * (S.w / 2 + .375), -S.h / 2 + .35, .14); }
-const swPX = (n) => { const p = portXY(n); return { x: -S.w / 2 + p.x, y: S.h / 2 - p.y, ledY: S.h / 2 - (p.row ? 1.6 : .13) }; };
-led(sw, -S.w / 2 + .45, S.h / 2 - .3, .01, 0x46e36a, 'steady');
-led(sw, -S.w / 2 + .45, S.h / 2 - .84, .01, 0x46e36a, 'steady');
-[1, 2, 3, 24].forEach(n => { const p = swPX(n); led(sw, p.x, p.ledY, .01, 0x46e36a, 'flicker', .04); });
+// thumbscrews on the network module
+for (const x of [15.18, 17.2]) { const t = mesh(new THREE.CylinderGeometry(.08, .08, .18, 14), silverScrew, sw, -S.w / 2 + x, S.h / 2 - .87, .09); t.rotation.x = Math.PI / 2; }
+const swPX = (n) => { const p = portXY(n); return { x: -S.w / 2 + p.x, y: S.h / 2 - p.y, ledY: S.h / 2 - (p.row ? 1.57 : .16) }; };
+led(sw, -S.w / 2 + .22, S.h / 2 - .3, .01, 0x46e36a, 'steady', .04);
+led(sw, -S.w / 2 + .22, S.h / 2 - .57, .01, 0x46e36a, 'flicker', .04);
+led(sw, -S.w / 2 + .22, S.h / 2 - .84, .01, 0x46e36a, 'steady', .04);
+led(sw, -S.w / 2 + .22, S.h / 2 - 1.38, .01, 0x46e36a, 'steady', .04);
+[1, 48].forEach(n => { const p = swPX(n); led(sw, p.x, p.ledY, .01, 0x46e36a, 'flicker', .035); });
+for (const x of [11.6, 14.5]) led(sw, S.w / 2 - (x + 1.6), S.h / 2 - 1.3, -S.d - .01, 0x46e36a, 'steady').rotation.y = Math.PI;
 outline(sw, S.w + 1.5, S.h, S.d, -S.d / 2);
-register(sw, 'Cisco Catalyst 2960G', 'Managed Gigabit switch', '#switch');
+register(sw, 'Cisco Catalyst 9300 · 48-port UPOE', '48 UPOE ports + 2× 25G SFP28 module', '#switch');
 
 /* ================= SERVER 2 — 2U case 16.9 × 3.5 × 15 in ================= */
 const C = { w: 16.9, h: 3.5, d: 15, bez: .35 };
@@ -385,60 +320,37 @@ register(s2, 'Server 2 · 2U chassis', 'i5-6500 · 16 GB · RX 580 · Jellyfin',
 
 /* ================= CABLES ================= */
 const v = (x, y, z) => new THREE.Vector3(x, y, z);
-function cable(points, color, r) {
-  const m = mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points, false, 'catmullrom', .5), 160, r, 10, false), std({ color, roughness: .55, metalness: 0 }));
-  return m;
-}
-function plug(x, y, z, color, w, h, d) { box(w || .46, h || .4, d || .8, std({ color, roughness: .4, metalness: 0, transparent: true, opacity: .92 }), rack, x, y, z); }
+function cable(points, color, r) { return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points, false, 'catmullrom', .5), 160, r, 10, false), std({ color, roughness: .55, metalness: 0 })); }
+function plug(x, y, z, color, w, h, d) { box(w || .4, h || .36, d || .8, std({ color, roughness: .4, metalness: 0, transparent: true, opacity: .92 }), rack, x, y, z); }
 const swWorld = (n) => { const p = swPX(n); return { x: p.x, y: sw.position.y + p.y }; };
-const UCS_BACK = FRONT - U.d, S2_BACK = FRONT - C.d, SW_BACK = FRONT - S.d;
-const ucsY = (canvasY) => ucs.position.y + U.h / 2 - canvasY;
-const ucsX = (canvasX) => U.w / 2 - canvasX;     // rear canvas is drawn as seen from behind
+const S2_BACK = FRONT - C.d, SW_BACK = FRONT - S.d;
 const s2Y = (canvasY) => s2.position.y + C.h / 2 - canvasY;
 const s2X = (canvasX) => C.w / 2 - canvasX;
-
-function patch(n, tx, ty, tz, color, o, viaY) {
+function patch(n, color, o) {
   const p = swWorld(n), lx = -9.05 - o;
   plug(p.x, p.y, FRONT + .42, color);
-  const pts = [v(p.x, p.y, FRONT + .8), v(p.x, p.y - .3, FRONT + 1.5), v(p.x * .82, 19.45 - o * .5, FRONT + 1.2), v(p.x * .55, 19.2 - o * .5, FRONT - 1.5), v(lx + 1.2, 19.05, 10.5), v(lx, 18.6, 7)];
-  if (viaY !== undefined) pts.push(v(lx, viaY + 1.2, 2), v(lx, viaY, -4));
-  return pts;
+  return [v(p.x, p.y, FRONT + .8), v(p.x, p.y - .3, FRONT + 1.5), v(p.x * .82, 19.45 - o * .5, FRONT + 1.2), v(p.x * .55, 19.2 - o * .5, FRONT - 1.5), v(lx + 1.2, 19.05, 10.5), v(lx, 18.6, 7)];
 }
-// port 1 → UCS LOM 1 (blue)
-{
-  const tx = ucsX(9.4), ty = ucsY(2.875);
-  const pts = patch(1, tx, ty, UCS_BACK, 0x2f6fd8, 0, ty);
-  pts.push(v(-9.1, ty, -13.9), v(-6, ty, -14.5), v(tx, ty, -14.55), v(tx, ty, UCS_BACK - .8));
-  cable(pts, 0x2f6fd8, .11); plug(tx, ty, UCS_BACK - .42, 0x2f6fd8);
-}
-// port 3 → UCS CIMC management (yellow)
-{
-  const tx = ucsX(8.7), ty = ucsY(2.875);
-  const pts = patch(3, tx, ty, UCS_BACK, 0xe2b93b, .14, ty + .05);
-  pts.push(v(-9.24, ty + .05, -13.7), v(-5, ty + .05, -14.35), v(tx, ty, -14.45), v(tx, ty, UCS_BACK - .8));
-  cable(pts, 0xe2b93b, .11); plug(tx, ty, UCS_BACK - .42, 0xe2b93b);
-}
-// port 2 → Server 2 LAN (blue)
+// port 1 → Server 2 LAN
 {
   const tx = s2X(4.45), ty = s2Y(2.0);
-  const pts = patch(2, tx, ty, S2_BACK, 0x2f6fd8, .28);
-  pts.push(v(-9.33, 13.8, 3), v(-9.3, ty + .4, -2.6), v(-5, ty + .1, -2.4), v(tx - 1, ty, -1.9), v(tx, ty, -1.5), v(tx, ty, S2_BACK - .8));
-  cable(pts, 0x2f6fd8, .11); plug(tx, ty, S2_BACK - .42, 0x2f6fd8);
+  const pts = patch(1, 0x2f6fd8, 0);
+  pts.push(v(-9.1, 13.8, 3), v(-9.1, ty + .4, -2.6), v(-5, ty + .1, -2.4), v(tx - 1, ty, -1.9), v(tx, ty, -1.5), v(tx, ty, S2_BACK - .8));
+  cable(pts, 0x2f6fd8, .1); plug(tx, ty, S2_BACK - .42, 0x2f6fd8);
 }
-// port 24 → uplink, leaves the rack at the back bottom
+// port 48 → uplink, leaves the rack at the back bottom
 {
-  const pts = patch(24, 0, 0, 0, 0xb9bec4, .42);
-  pts.push(v(-9.47, 8, 2), v(-9.4, 3.3, -6), v(-9.2, 3.0, -13.3), v(-8.4, 2.9, -15.6), v(-7.6, 1.2, -18), v(-6, .15, -23), v(-3, .15, -32));
-  cable(pts, 0xb9bec4, .11);
+  const pts = patch(48, 0xb9bec4, .2);
+  pts.push(v(-9.3, 8, 2), v(-9.3, 3.3, -6), v(-9.2, 3.0, -13.3), v(-8.4, 2.9, -15.6), v(-7.6, 1.2, -18), v(-6, .15, -23), v(-3, .15, -32));
+  cable(pts, 0xb9bec4, .1);
 }
 // power cords
-function cord(x, y, zBack, pts) {
-  plug(x, y, zBack - .6, 0x111214, .9, .7, 1.2);
-  cable([v(x, y, zBack - 1.2), ...pts], 0x161718, .17);
-}
-for (const px of [11.35, 14.2]) { const x = ucsX(px + 2.1), y = ucsY(2.125); cord(x, y, UCS_BACK, [v(x, y - .3, -15.9), v(x - .3, y - 3, -16.8), v(x - .5, 4, -17.4), v(x - .4, .17, -19.5), v(x + 1, .17, -26), v(x + 4, .17, -34)]); }
+function cord(x, y, zBack, pts) { plug(x, y, zBack - .6, 0x111214, .9, .7, 1.2); cable([v(x, y, zBack - 1.2), ...pts], 0x161718, .17); }
 { const x = s2X(15.05), y = s2Y(1.275); cord(x, y, S2_BACK, [v(x, y - .4, -3), v(x + .2, y - .8, -10), v(x + .2, y - .9, -14), v(x + .3, y - 1.5, -16.2), v(x + .2, 3, -17.6), v(x + .6, .17, -20.5), v(x + 2, .17, -29)]); }
-{ const y = sw.position.y + S.h / 2 - .855; const xx = S.w / 2 - 15.55; cord(xx, y, SW_BACK, [v(xx, y - .3, -1.5), v(xx, 19.3, -5), v(xx, 19.3, -13.2), v(xx + .3, 18.6, -16.1), v(xx + .5, 10, -17.6), v(xx + .4, 1.5, -18), v(xx + .8, .17, -21), v(xx + 3, .17, -31)]); }
+for (const px of [11.6, 14.5]) {
+  const x = S.w / 2 - (px + 2.15), y = sw.position.y + S.h / 2 - .84;
+  cord(x, y, SW_BACK, [v(x, y - .4, SW_BACK - 2.4), v(x, 19.35, SW_BACK - 5), v(x, 19.35, -13.2), v(x + .3, 18.7, -16.1), v(x + .5, 10, -17.6), v(x + .4, 1.5, -18), v(x + .8, .17, -21), v(x + 3, .17, -31)]);
+}
 
 /* ---------- floor shadow ---------- */
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), new THREE.ShadowMaterial({ opacity: .42 }));
@@ -526,6 +438,7 @@ function start() {
       else if (u.mode === 'flicker') { u.t -= dt; if (u.t <= 0) { u.state = R() < .55; u.t = .03 + R() * .18; } on = u.state; }
       if (!reduce || u.mode === 'steady') l.material.color.copy(on ? u.on : u.off);
     }
+    if (!reduce) ghost.opacity = .08 + .05 * (.5 + .5 * Math.sin(T * 1.6));
     for (const d of devices) { const o = d.userData.outline.material; o.opacity += ((d === hovered ? .9 : 0) - o.opacity) * .2; }
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
